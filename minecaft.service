@@ -1,0 +1,34 @@
+# Source: https://github.com/agowa338/MinecraftSystemdUnit/
+# License: MIT
+[Unit]
+Description=Yet Another Minecraft Server
+After=network.target
+
+[Service]
+WorkingDirectory=/home/mcserver/server
+PrivateUsers=true
+User=mcserver
+Group=mcserver
+ProtectSystem=full
+ProtectHome=false
+ProtectKernelTunables=true
+ProtectKernelModules=true
+# Implies NoNewPrivileges=yes
+ProtectControlGroups=true
+# Implies MountAPIVFS=yes
+
+ExecStart=/usr/bin/bash -c '[ -d $HOME/.screen ] || mkdir $HOME/.screen 2>/dev/null ; chmod 700 $HOME/.screen ; /usr/bin/screen -DmS mc-server /usr/bin/java -server -Xms7G -Xmx7G -jar  forge-1.15.2-31.2.29.jar nogui'
+
+ExecReload=/usr/bin/screen -p 0 -S mc-server -X eval 'stuff "reload"\\015'
+
+ExecStop=/home/mcserver/backup.sh
+ExecStop=/usr/bin/screen -p 0 -S mc-server -X eval 'stuff "say SERVER SHUTTING DOWN. Saving map..."\\015'
+ExecStop=/usr/bin/screen -p 0 -S mc-server -X eval \'stuff "save-all"\\015\'
+ExecStop=/usr/bin/screen -p 0 -S mc-server -X eval \'stuff "stop"\\015\'
+ExecStop=/bin/sleep 10
+
+Restart=on-failure
+RestartSec=60s
+
+[Install]
+WantedBy=multi-user.target
