@@ -35,6 +35,12 @@ class server(object):
         self.log_warn = False
         self.log_err = False
 
+        asyncio.run(self.logger.log(
+            {
+                "message": "Server started",
+            }
+        ), "server boot")
+
     async def filters(self):
         color = ""
 
@@ -138,6 +144,13 @@ class server(object):
         print("\n")
         print("{0} {1}| SYSTM:{2} Reviced exit command.".format(
             time.strftime("%I:%M:%S"), clr.magenta, clr.end))
+
+        asyncio.run(self.logger.log(
+            {
+                "message": "Received shutdown command",
+            }
+        ), "server shutdown")
+
         if(self.process):
             self.process.stdin.write("save-all\n".encode())
             print("{0} {1}| SYSTM:{2} Stopping the server...".format(
