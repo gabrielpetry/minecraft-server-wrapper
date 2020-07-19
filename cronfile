@@ -1,0 +1,3 @@
+00 * * * * /home/mcserver/backup.sh
+*/10 * * * * /home/mcserver/save-all.sh
+# 12 * * * * find $HOME/backups/ -mtime +0 -exec rm -rf {} \;
